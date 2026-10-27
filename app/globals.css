@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --ink: #14251f;
+  --muted: #65736e;
+  --line: #e2e9e5;
+  --surface: #ffffff;
+  --canvas: #f5f8f6;
+  --green: #176b50;
+  --green-dark: #10523c;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--canvas); color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
+.container { width: min(1120px, calc(100% - 40px)); margin-inline: auto; }
+.topbar { height: 72px; display: flex; align-items: center; border-bottom: 1px solid var(--line); background: var(--surface); }
+.brand { font-size: 20px; font-weight: 700; letter-spacing: -.04em; }
+.brand span { color: var(--green); }
+.topbar-inner { display: flex; justify-content: space-between; align-items: center; }
+.eyebrow { color: var(--green); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.muted { color: var(--muted); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 18px; border: 0; border-radius: 8px; background: var(--green); color: white; font-weight: 700; cursor: pointer; }
+.button:hover { background: var(--green-dark); }
+.button-secondary { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; background: white; font-weight: 600; }
+.field { display: grid; gap: 7px; }
+.field label { font-size: 14px; font-weight: 600; }
+.field input { width: 100%; height: 46px; padding: 0 12px; border: 1px solid #d6dfda; border-radius: 8px; background: white; color: var(--ink); outline-color: var(--green); }
+.notice { border: 1px solid #d8e7df; border-radius: 10px; background: #f2f8f4; padding: 14px 16px; color: #355747; font-size: 14px; line-height: 1.55; }
+@media (max-width: 640px) { .container { width: min(100% - 28px, 1120px); } }
