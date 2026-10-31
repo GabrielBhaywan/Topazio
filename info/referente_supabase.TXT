@@ -1,7 +1,0 @@
-CONTA: conta de administrador 
-UID: 3d1f03e5-86c2-47de-8c2e-11e013e8173d
-E-MAIL: rumofalcao14@gmail.com
-
-CONTA: conta de teste
-UID: a127f6a2-5e52-47ac-877c-c5200e1517f3
-E-MAIL:bhaywan700@gmail.com

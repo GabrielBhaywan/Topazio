@@ -31,3 +31,10 @@ Os testes 1–12 dependem de usuários, e-mail, RLS e configuração do projeto 
 ## Migração
 
 O único SQL necessário nesta etapa está em `supabase/migrations/20261030000100_admin_company_management.sql`. Aplique-o manualmente no SQL Editor e confirme o resultado antes de testar a tela. Não conceda INSERT/UPDATE/DELETE ao papel `authenticated`.
+
+## Recuperação de senha
+
+- Permita nas Redirect URLs do Supabase `http://localhost:3000/auth/callback?next=%2Fredefinir-senha` para recuperação e `http://localhost:3000/auth/callback?next=%2Fdefinir-senha` para convite. Cadastre também as URLs equivalentes da origem HTTPS de produção. Use destinos exatos; não abra curingas amplos para produção.
+- Confirme que o modelo **Reset password** preserva o destino fornecido pelo app (`{{ .RedirectTo }}` ao montar link por token hash). O callback aceita o retorno PKCE com `code` e o retorno por `token_hash` com `type=recovery`.
+- Teste com endereço de uma conta de teste: solicite a recuperação, abra o e-mail, confirme a sessão na página `/redefinir-senha`, atualize a senha e entre novamente. A interface não deve revelar se um endereço não cadastrado existe.
+- Confirme que link expirado ou sessão ausente apresenta mensagem simples e que não é possível definir senha para outra conta. Não copie tokens, códigos ou cookies para logs ou relatórios.

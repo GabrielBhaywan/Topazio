@@ -2,12 +2,17 @@ import Link from 'next/link'
 import LoginForm from './login-form'
 
 type HomePageProps = {
-  searchParams?: Promise<{ convite?: string }>
+  searchParams?: Promise<{ convite?: string; auth?: string }>
 }
 
 export default async function HomePage({ searchParams }: HomePageProps) {
   const params = searchParams ? await searchParams : undefined
-
+  const authMessages: Record<string, string> = {
+    'link-invalido': 'Este link expirou ou não pôde ser validado. Solicite uma nova redefinição de senha ou peça outro convite à administração.',
+    'sessao-ausente': 'Sua sessão não está ativa. Abra novamente o link recebido por e-mail.',
+    indisponivel: 'Não foi possível validar sua sessão agora. Tente novamente em instantes.',
+  }
+  const authMessage = params?.auth ? authMessages[params.auth] : undefined
   return (
     <main
       className="container"
@@ -40,6 +45,11 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           <div className="notice" role="alert" style={{ marginBottom: 20 }}>
             O convite expirou ou não pôde ser validado. Solicite um novo convite
             à administração.
+          </div>
+        )}
+        {authMessage && (
+          <div className="notice" role="alert" style={{ marginBottom: 20 }}>
+            {authMessage}
           </div>
         )}
 

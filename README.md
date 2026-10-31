@@ -49,3 +49,9 @@ Consulte [docs/admin-company-testing.md](docs/admin-company-testing.md) para a o
 - Convites dependem do serviço de e-mail e das URLs configuradas no Supabase.
 - A criação usa compensação do usuário Auth se a transação pública falhar; falha de compensação é explicitamente sinalizada para suporte.
 - Os módulos comerciais (produtos, pedidos e financeiro) continuam fora do escopo.
+
+## Recuperação de senha
+
+Na tela de login, **Esqueci minha senha** solicita um link pelo Supabase Auth. O callback valida o retorno e abre `/redefinir-senha`; a atualização só ocorre depois de confirmar a sessão do usuário. A mensagem após a solicitação é genérica para não revelar se um e-mail possui conta.
+
+Em **Authentication > URL Configuration > Redirect URLs**, permita os retornos usados pela aplicação. Para desenvolvimento local, inclua `http://localhost:3000/auth/callback?next=%2Fredefinir-senha` e, para convites, `http://localhost:3000/auth/callback?next=%2Fdefinir-senha`. Em produção, configure as URLs equivalentes com a origem HTTPS real. Mantenha também a Site URL (`NEXT_PUBLIC_SITE_URL`) apontada para a origem correta. O modelo de recuperação precisa preservar o redirecionamento recebido (`{{ .RedirectTo }}` quando o modelo usar token hash); o callback aceita PKCE `code` e `token_hash` dos tipos `invite` e `recovery`.

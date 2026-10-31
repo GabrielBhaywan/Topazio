@@ -26,19 +26,20 @@ export default function SetPasswordForm() {
       const { data: { user }, error: sessionError } = await supabase.auth.getUser()
 
       if (sessionError || !user) {
-        setMessage('Sua sessão de convite não está ativa. Abra novamente o link recebido ou solicite ajuda à administração.')
+        setMessage('Sua sessão expirou ou não é válida. Solicite um novo link e abra-o novamente.')
         return
       }
 
       const { error } = await supabase.auth.updateUser({ password })
       if (error) {
-        setMessage('Não foi possível definir a senha. Solicite um novo convite.')
+        setMessage('Não foi possível salvar a senha. Confira os requisitos e, se o problema continuar, solicite um novo link.')
         return
       }
+
       router.replace('/painel')
       router.refresh()
     } catch {
-      setMessage('Não foi possível conectar ao sistema. Tente novamente.')
+      setMessage('Não foi possível conectar ao sistema. Sua senha não foi alterada; tente novamente em instantes.')
     } finally {
       setBusy(false)
     }

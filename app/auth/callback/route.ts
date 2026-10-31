@@ -13,7 +13,6 @@ export async function GET(request: NextRequest) {
   const tokenHash = request.nextUrl.searchParams.get('token_hash')
   const type = request.nextUrl.searchParams.get('type')
   const nextPath = safeNextPath(request.nextUrl.searchParams.get('next'))
-
   const supabase = await createClient()
 
   if (code) {
@@ -26,16 +25,17 @@ export async function GET(request: NextRequest) {
       code: error.code ?? 'unknown',
       status: error.status ?? 'unknown',
     })
-  } else if (tokenHash && type === 'invite') {
+  } else if (tokenHash && (type === 'invite' || type === 'recovery')) {
     const { error } = await supabase.auth.verifyOtp({
       token_hash: tokenHash,
-      type: 'invite',
+      type,
     })
     if (!error) {
       return NextResponse.redirect(new URL(nextPath, request.url))
     }
 
-    console.error('[auth callback] invite token verification failed', {
+    console.error('[auth callback] email token verification failed', {
+      type,
       code: error.code ?? 'unknown',
       status: error.status ?? 'unknown',
     })
@@ -48,5 +48,5 @@ export async function GET(request: NextRequest) {
     })
   }
 
-  return NextResponse.redirect(new URL('/?convite=erro', request.url))
+  return NextResponse.redirect(new URL('/?auth=link-invalido', request.url))
 }

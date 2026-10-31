@@ -6,12 +6,16 @@ import SetPasswordForm from './set-password-form'
 export const metadata = { title: 'Definir senha | Topázio' }
 
 export default async function SetPasswordPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  let hasSession = false
+  try {
+    const supabase = await createClient()
+    const { data: { user }, error } = await supabase.auth.getUser()
+    hasSession = Boolean(user) && !error
+  } catch {
+    redirect('/?auth=indisponivel')
+  }
 
-  if (!user) redirect('/?convite=erro')
+  if (!hasSession) redirect('/?auth=sessao-ausente')
 
   return (
     <main
@@ -22,12 +26,12 @@ export default async function SetPasswordPage() {
         <Link className="brand" href="/">
           Topázio<span>.</span>
         </Link>
-        <p className="eyebrow" style={{ marginTop: 32 }}>Convite recebido</p>
+        <p className="eyebrow" style={{ marginTop: 32 }}>Acesso seguro</p>
         <h1 style={{ fontSize: 28, letterSpacing: '-.04em', margin: '8px 0' }}>
           Defina sua senha
         </h1>
         <p className="muted" style={{ lineHeight: 1.6 }}>
-          Crie uma senha para concluir a configuração do seu acesso.
+          Escolha uma senha para concluir o acesso à sua conta.
         </p>
         <SetPasswordForm />
       </section>
