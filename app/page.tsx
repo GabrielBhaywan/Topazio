@@ -1,7 +1,13 @@
 import Link from 'next/link'
 import LoginForm from './login-form'
 
-export default function HomePage() {
+type HomePageProps = {
+  searchParams?: Promise<{ convite?: string }>
+}
+
+export default async function HomePage({ searchParams }: HomePageProps) {
+  const params = searchParams ? await searchParams : undefined
+
   return (
     <main
       className="container"
@@ -29,6 +35,13 @@ export default function HomePage() {
         <p className="muted" style={{ lineHeight: 1.6, margin: '0 0 24px' }}>
           Acesse o ambiente de gestão da sua empresa.
         </p>
+
+        {params?.convite === 'erro' && (
+          <div className="notice" role="alert" style={{ marginBottom: 20 }}>
+            O convite expirou ou não pôde ser validado. Solicite um novo convite
+            à administração.
+          </div>
+        )}
 
         <LoginForm />
 

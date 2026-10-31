@@ -1,43 +1,51 @@
 # Topázio
 
-Fundação inicial do sistema web de gestão empresarial da RumoFalcão. O projeto prepara a estrutura de interface para evoluir com contas empresariais isoladas e contas administrativas autorizadas.
+Sistema web de gestão empresarial multiempresa da RumoFalcão. Esta etapa implementa o início da administração de empresas, com controle de acesso pelo servidor e isolamento apoiado pelo Supabase RLS.
 
 ## Tecnologias
 
-- Next.js com App Router e TypeScript
+- Next.js 16 com App Router e TypeScript
 - Tailwind CSS
-- Supabase (integração futura)
+- Supabase Auth, PostgreSQL, `@supabase/ssr` e RLS
 
-## Pré-requisitos
+## Pré-requisitos e execução
 
 - Node.js 20.9 ou superior
 - npm
-
-## Instalação e execução
 
 ```bash
 npm install
 npm run dev
 ```
 
-Abra [http://localhost:3000](http://localhost:3000) no navegador. Para validar a aplicação, use `npm run typecheck`, `npm run lint` e `npm run build`.
+Abra <http://localhost:3000>. As verificações locais são `npm run typecheck`, `npm run lint` e `npm run build`.
 
-## Variáveis de ambiente
+## Configuração
 
-Copie `.env.example` para `.env.local` e preencha as variáveis quando houver um projeto Supabase configurado. Nenhum projeto ou credencial foi presumido. Não coloque chaves secretas no código do navegador ou em arquivos versionados.
+Configure `.env.local` sem versionar esse arquivo:
 
-## Implementado nesta etapa
+- `NEXT_PUBLIC_SUPABASE_URL`: URL do projeto.
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: chave publishable, permitida no cliente.
+- `SUPABASE_SECRET_KEY`: chave secreta, somente no servidor. Nunca use prefixo `NEXT_PUBLIC_`.
+- `NEXT_PUBLIC_SITE_URL`: origem da aplicação usada no link do convite, como `http://localhost:3000` em desenvolvimento.
 
-- Estrutura inicial do Next.js, TypeScript e Tailwind CSS.
-- Página visual de login em português, sem envio ou validação de credenciais.
-- Esqueleto visual do painel em `/painel`, sem dados reais ou proteção de rota.
-- Estado visual de acesso negado em `/sem-permissao`, sem verificação real de permissões.
-- Variáveis de ambiente exemplificadas sem valores.
+O arquivo `.env.example` contém somente os nomes e um valor local não secreto para a URL do site. No Supabase, adicione `/auth/callback` às URLs de redirecionamento permitidas. Em produção, configure a URL HTTPS pública como Site URL e Redirect URL.
 
-## Ainda não implementado
+## Administração de empresas
 
-Autenticação Supabase, autorização por tipo de conta, isolamento de dados, políticas de banco, administração de empresas e módulos operacionais. O formulário e as páginas protegidas são apenas estrutura visual; não use o sistema para autenticar ou armazenar dados.
+Após aplicar a migração descrita em [supabase/migrations/20261030000100_admin_company_management.sql](supabase/migrations/20261030000100_admin_company_management.sql), usuários autenticados com perfil `rumofalcao_admin` podem abrir **Administrar empresas** no painel. O cadastro envia um convite de definição de senha; a conta criada recebe sempre `role = 'company_user'` e o vínculo com a nova empresa. A lista permite pesquisar, bloquear e reativar empresas.
 
-## Próxima etapa recomendada
+Cada operação administrativa confirma a sessão e o perfil no servidor antes de carregar a chave secreta. A migração cria empresa e perfil em uma transação e limita a execução da função ao papel `service_role`. Políticas SELECT restritivas preservam as políticas existentes e ocultam o próprio perfil/empresa de uma conta enquanto ela estiver bloqueada.
 
-Configurar um projeto Supabase e desenhar o modelo de contas, vínculos entre usuários e empresas e políticas de segurança RLS antes de conectar o Supabase Auth e proteger as rotas.
+Consulte [docs/admin-company-testing.md](docs/admin-company-testing.md) para a ordem de configuração e o roteiro de validação.
+
+## Testes diagnósticos temporários
+
+`/teste-login` e `/teste-conexao` permanecem disponíveis durante o desenvolvimento e retornam 404 em produção via `proxy.ts`. Não são necessários para a administração e devem ser removidos quando o diagnóstico terminar.
+
+## Limitações desta etapa
+
+- A migração SQL precisa ser aplicada manualmente; o código não altera o banco remoto.
+- Convites dependem do serviço de e-mail e das URLs configuradas no Supabase.
+- A criação usa compensação do usuário Auth se a transação pública falhar; falha de compensação é explicitamente sinalizada para suporte.
+- Os módulos comerciais (produtos, pedidos e financeiro) continuam fora do escopo.

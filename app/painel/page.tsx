@@ -109,6 +109,13 @@ export default async function PanelPage() {
               ? 'Área administrativa da RumoFalcão.'
               : 'Área de gestão da empresa conectada à sua conta.'}
           </p>
+          {profile.role === 'rumofalcao_admin' && (
+            <p style={{ marginBottom: 0, marginTop: 20 }}>
+              <Link className="button" href="/painel/empresas">
+                Administrar empresas
+              </Link>
+            </p>
+          )}
         </section>
 
         <h2 style={{ fontSize: 18, marginBlock: '28px 14px' }}>
